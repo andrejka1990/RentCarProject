@@ -17,22 +17,21 @@ and open the template in the editor.
             <p>Test websocket application</p>
             <br />
             <div id="addUser">
-                <div id="loginButton" class="button"> <a href="#" OnClick="showForm()">Login</a> </div>
+                <div id="loginButton" class="button"> <a href="#" OnClick="showForm()">Authentication</a> </div>
                 <form id="addUserForm">
-                    <span>Name:
-                        <input type="text" name="user_name" id="user_name">
-                        <input type="button" class="button" value="Add" onclick="formSubmit()">
+                    <span>Username:<input type="text" name="username" id="username"></span><p></p>
+                    <span>Password:<input type="password" name="passwordname" id="passwordname"></span>
+                    <p></p><span>
+                        <input type="button" class="button" value="Login" onclick="formSubmit()">
                         <input type="reset" class="button" value="Cancel" onclick="hideForm()">
                     </span>
                 </form>
             </div>
-            <br />
-            <h3>Currently connected users:</h3>
+            <h3 id="currentUser"></h3>
             <div id="content"></div>
             <div id="logging">
-                <p>Logging statistics:</p>
+                <p>Pinging statistics:</p>
             </div>
         </div>
-
     </body>
 </html>

@@ -9,100 +9,111 @@ window.onload = init;
 var socket = new WebSocket("ws://localhost:8080/WebSocketTestApp/test");
 socket.onmessage = onMessage;
 
+function init() {
+    hideForm();
+}
+
 function onMessage(event) {
-    var user = JSON.parse(event.data);
-    if (user.action === "add") {
+   var user = JSON.parse(event.data);
+    if (user.$type === "login") {
         printUserElement(user);
     }
-    if (user.action === "remove") {
-        document.getElementById(user.id).remove();
+    if (user.$type === "remove") {
+        var username = document.getElementById("currentUser");    
+        username.innerHTML = '';
         user.parentNode.removeChild(user);
     }
-    if (user.action === "ping") {
-        pingUserElement(user);
-    }
 }
 
-function addUser(name) {
-    var userAction = {
-        action: "add",
-        name: name
-    };
-    socket.send(JSON.stringify(userAction));
-}
-
-function removeUser(element) {
-    var userAction = {
-        action: "remove",
-        id: element
-    };
-    document.getElementById("loginButton").style.display = '';
+function hideForm() {
+    document.getElementById("content").style.display = "none";
     document.getElementById("logging").style.display = "none";
-    socket.send(JSON.stringify(userAction));
+    document.getElementById("addUserForm").style.display = "none";
+    document.getElementById("currentUser").style.display = "none";
+    document.getElementById("loginButton").style.display = '';
 }
 
-function pingUser(element) {
+function showForm() {
+    document.getElementById("addUserForm").style.display = '';
+    document.getElementById("loginButton").style.display = "none";
+    document.getElementById("currentUser").style.display = "none";
+    document.getElementById("content").style.display = "none";
+    document.getElementById("logging").style.display = "none";
+}
+
+function formSubmit() {
+    var form = document.getElementById("addUserForm");
+    var username = form.elements["username"].value;
+    var password = form.elements["passwordname"].value;
+    
+    hideForm();
+    document.getElementById("addUserForm").reset();
+    login(username, password);
+    document.getElementById("currentUser").style.display = '';
+    document.getElementById("loginButton").style.display = "none";
+    document.getElementById("content").style.display = '';
+    document.getElementById("logging").style.display = '';
+}
+
+function login(username, password) {
     var userAction = {
-        action: "ping",
-        id: element
+        $type: "login",
+        username: username,
+        password: password
     };
     socket.send(JSON.stringify(userAction));
 }
 
 function printUserElement(user) {
-    var content = document.getElementById("content");
-    
-    var userDiv = document.createElement("div");
-    userDiv.setAttribute("id", user.id);
-    content.appendChild(userDiv);
-
-    var userName = document.createElement("span");
-    userName.setAttribute("class", "userName");
-    userName.innerHTML = user.name +"("+user.id+")"+ "\t";
-    userDiv.appendChild(userName);
-
-    var removeUser = document.createElement("span");
-    removeUser.setAttribute("class", "removeUser");
-    removeUser.innerHTML = "<div class=\"button\">\n\
-        <a href=\"#\" onClick=removeUser(" + user.id + ")>Log off</a>\n\
+    var username = document.getElementById("currentUser");    
+    username.innerHTML = user.username;
+       
+    var logoff = document.createElement("span");
+    logoff.setAttribute("class", "removeUser");
+    logoff.innerHTML = "<p/><p/><div class=\"button\">\n\
+        <a href=\"#\" onClick=logoff(" + user.id + ")>Log off</a>\n\
     </div>";
-    userDiv.appendChild(removeUser);
+    username.appendChild(logoff);
     
-    var pingUser = document.createElement("span");
-    pingUser.setAttribute("class", "removeUser");
-    pingUser.innerHTML = "<div class=\"button\">\n\
-        <a href=\"#\" onClick=pingUser(" + user.id + ")>Ping user</a>\n\
+    var ping = document.createElement("span");
+    ping.setAttribute("class", "removeUser");
+    ping.innerHTML = "<div class=\"button\">\n\
+        <a href=\"#\" onClick=pingUser(" + user.username + ")Ping user</a>\n\
     </div>";
-    userDiv.appendChild(pingUser);
-}
-
-function pingUserElement(user) {
-    var content = document.getElementById("logging");
+    username.appendChild(ping);
     
-    var headerText = document.createElement("p");
-    headerText.innerHTML = "User "+user.id+": System -> Pong";
-    content.appendChild(headerText);        
+    if(user.username === "admin") {        
+        var addTable = document.createElement("span");
+        addTable.setAttribute("class", "removeUser");
+        addTable.innerHTML = "<div class=\"button\">\n\
+            <a href=\"#\">Add table</a>\n\
+        </div>";
+        username.appendChild(addTable);
+        
+        document.getElementById("content").style.display = "none";
+    } else {
+        var content = document.getElementById("content");
+        var subscribe = document.createElement("span");
+        subscribe.setAttribute("class", "removeUser");
+        subscribe.innerHTML = "<p/><p/><h3>Table name\n\
+        <div class=\"button\">\n\
+            <a href=\"#\">Subscribe</a>\n\
+        </div>\n\
+        <div class=\"button\">\n\
+            <a href=\"#\">Unsubscribe</a>\n\
+        </div></h3>";
+        content.appendChild(subscribe);
+    }
 }
 
-function showForm() {
-    document.getElementById("addUserForm").style.display = '';
-}
-
-function hideForm() {
-    document.getElementById("addUserForm").style.display = "none";
-}
-
-function formSubmit() {
-    var form = document.getElementById("addUserForm");
-    var name = form.elements["user_name"].value;
-    hideForm();
-    document.getElementById("addUserForm").reset();
-    addUser(name);
-    document.getElementById("loginButton").style.display = "none";
-    document.getElementById("logging").style.display = '';
-}
-
-function init() {
-    hideForm();
+function logoff(id) {
+    var userAction = {
+        $type: "remove",
+        id: id
+    };
+    document.getElementById("loginButton").style.display = '';
+    document.getElementById("content").innerHTML = '';
+    document.getElementById("content").style.display = "none";
     document.getElementById("logging").style.display = "none";
+    socket.send(JSON.stringify(userAction));
 }

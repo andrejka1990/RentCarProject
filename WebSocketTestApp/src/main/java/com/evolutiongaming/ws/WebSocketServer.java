@@ -5,8 +5,8 @@
  */
 package com.evolutiongaming.ws;
 
+import com.evolutiongaming.entity.Ping;
 import com.evolutiongaming.entity.User;
-
 import java.io.StringReader;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -48,21 +48,24 @@ public class WebSocketServer {
     public void handleMessage(final String message, final Session session) {
         try (final JsonReader reader = Json.createReader(new StringReader(message))) {
             final JsonObject jsonMessage = reader.readObject();
-
-            if ("add".equalsIgnoreCase(jsonMessage.getString("action"))) {
+            
+            if (jsonMessage.getString("$type").equalsIgnoreCase("login")) {
                 final User user = new User();
-                user.setName(jsonMessage.getString("name"));
+                user.setName(jsonMessage.getString("username"));
+                user.setPassword(jsonMessage.getString("password"));
                 sessionHandler.addUser(user);
             }
-
-            if ("remove".equalsIgnoreCase(jsonMessage.getString("action"))) {
+            
+            if (jsonMessage.getString("$type").equalsIgnoreCase("remove")) {
                 final int id = jsonMessage.getInt("id");
                 sessionHandler.removeUser(id);
             }
             
-            if ("ping".equalsIgnoreCase(jsonMessage.getString("action"))) {
-                final int id = jsonMessage.getInt("id");
-                sessionHandler.pingUser(id);
+            if (jsonMessage.getString("$type").equalsIgnoreCase("ping")) {
+                final Ping pingObj = new Ping();
+                pingObj.setSeq(jsonMessage.getInt("seq", 0));
+                pingObj.setPong(jsonMessage.getString("$type"));
+                sessionHandler.addPing(pingObj);
             }
         }
     }

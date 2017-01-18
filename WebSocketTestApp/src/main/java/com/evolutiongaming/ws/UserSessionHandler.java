@@ -5,11 +5,12 @@
  */
 package com.evolutiongaming.ws;
 
+import com.evolutiongaming.entity.Ping;
 import com.evolutiongaming.entity.User;
 
 import java.io.IOException;
-
 import java.util.ArrayList;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -32,10 +33,13 @@ public class UserSessionHandler {
     private final Set<Session> sessions = new HashSet<>();
     private final Set<User> users = new HashSet<>();
     
+    private int pingId = 0;
+    private final Set<Ping> pings = new HashSet<>();
+    
     public void addSession(final Session session) {     
         sessions.add(session);
         
-        users.stream().map(user -> createAddMessage(user)).forEach(addMessage -> 
+        users.stream().map(user -> loginMessage(user)).forEach(addMessage -> 
             sendToSession(session, addMessage)
         ); 
     }
@@ -44,17 +48,12 @@ public class UserSessionHandler {
         sessions.remove(session);
     }
     
-    public List<User> getUsers() {     
-        return new ArrayList<>(users);   
-    }  
-    
     public void addUser(final User user) {  
         user.setId(userId);
         users.add(user);
         userId++;
-        final JsonObject addMessage = createAddMessage(user);
-        sendToAllConnectedSessions(addMessage);
-    }   
+        sendToAllConnectedSessions(loginMessage(user));
+    }
     
     public void removeUser(final int id) { 
         final User user = getUserById(id).get();
@@ -62,45 +61,45 @@ public class UserSessionHandler {
         
         final JsonObject removeMessage = removeMessage(id);
         sendToAllConnectedSessions(removeMessage);
-    }   
-    
-    public void pingUser(final int id) {
-        final User user = getUserById(id).get();
-        final JsonObject pingMessage = pingMessage(user);
-        sendToAllConnectedSessions(pingMessage);
     }
     
-    private Optional<User> getUserById(final int id) {       
-        return users.stream().filter(user -> user.getId() == id).findFirst();
-    }  
+    public void addPing(final Ping ping) {  
+        ping.setSeq(pingId);
+        pings.add(ping);
+        pingId++;
+        sendToAllConnectedSessions(pingMessage(ping));
+    }
     
-    private JsonObject createAddMessage(final User user) {    
+    public List<Ping> getPings() {     
+        return new ArrayList<>(pings);   
+    } 
+    
+    private JsonObject pingMessage(final Ping p) {    
+        final JsonProvider provider = JsonProvider.provider();
+        final JsonObject pingMessage = provider.createObjectBuilder()
+                .add("$type", "ping").add("id", p.getSeq()).build();
+        return pingMessage; 
+    }
+    
+    private JsonObject loginMessage(final User user) {    
         final JsonProvider provider = JsonProvider.provider();
         final JsonObject addMessage = provider.createObjectBuilder()
-                .add("action", "add").add("id", user.getId())
-                .add("name", user.getName()).build();
+                .add("$type", "login").add("id", user.getId())
+                .add("username", user.getName()).add("password", user.getPassword())
+                .build();
         return addMessage; 
-    } 
+    }
     
     private JsonObject removeMessage(final int id) {    
         final JsonProvider provider = JsonProvider.provider();
         final JsonObject removeMessage = provider.createObjectBuilder()
-                .add("action", "remove").add("id", id).build();
+                .add("$type", "remove").add("id", id).build();
         return removeMessage; 
     }
     
-    private JsonObject pingMessage(final User user) {    
-        final JsonProvider provider = JsonProvider.provider();
-        final JsonObject pingMessage = provider.createObjectBuilder()
-                .add("action", "ping").add("id", user.getId()).build();
-        return pingMessage; 
+    private Optional<User> getUserById(final int id) {       
+        return users.stream().filter(user -> user.getId() == id).findFirst();
     }
-    
-    private void sendToAllConnectedSessions(final JsonObject message) { 
-        sessions.stream().forEach(session -> 
-            sendToSession(session, message)
-        );
-    }  
     
     private void sendToSession(final Session session, final JsonObject message) { 
         try {
@@ -108,5 +107,11 @@ public class UserSessionHandler {
         } catch (IOException ex) {
             sessions.remove(session);
         }
+    }
+    
+    private void sendToAllConnectedSessions(final JsonObject message) { 
+        sessions.stream().forEach(session -> 
+            sendToSession(session, message)
+        );
     }
 }
