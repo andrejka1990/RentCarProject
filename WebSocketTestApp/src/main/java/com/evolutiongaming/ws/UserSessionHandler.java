@@ -77,7 +77,7 @@ public class UserSessionHandler {
     private JsonObject pingMessage(final Ping p) {    
         final JsonProvider provider = JsonProvider.provider();
         final JsonObject pingMessage = provider.createObjectBuilder()
-                .add("$type", "ping").add("id", p.getSeq()).build();
+                .add("$type", "ping").add("seq", p.getSeq()).build();
         return pingMessage; 
     }
     
