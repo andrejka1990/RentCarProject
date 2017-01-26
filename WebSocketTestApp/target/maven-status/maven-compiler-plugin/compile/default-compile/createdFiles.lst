@@ -1,4 +1,3 @@
 com\evolutiongaming\entity\User.class
 com\evolutiongaming\ws\WebSocketServer.class
-com\evolutiongaming\entity\Ping.class
 com\evolutiongaming\ws\UserSessionHandler.class

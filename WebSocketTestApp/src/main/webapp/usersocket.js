@@ -84,12 +84,6 @@ function printUserElement(user) {
         username.appendChild(addTable);
         
         document.getElementById("content").style.display = "none";
-    } else {
-        var content = document.getElementById("content");
-        var subscribe = document.createElement("span");
-        subscribe.setAttribute("class", "removeUser");
-        subscribe.innerHTML = "<p/><p/><h3>Table name</h3>";
-        content.appendChild(subscribe);
     }
 }
 
