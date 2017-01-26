@@ -23,10 +23,6 @@ function onMessage(event) {
         username.innerHTML = '';
         user.parentNode.removeChild(user);
     }
-    
-    if (user.$type === "ping") {
-        pingUserElement(user.username); 
-    }
 }
 
 function hideForm() {
@@ -78,14 +74,7 @@ function printUserElement(user) {
         <a href=\"#\" onClick=logoff(" + user.id + ")>Log off</a>\n\
     </div>";
     username.appendChild(logoff);
-    
-    var ping = document.createElement("span");
-    ping.setAttribute("class", "removeUser");
-    ping.innerHTML = "<div class=\"button\">\n\
-        <a href=\"#\" onClick=pingUser()>Ping user</a>\n\
-    </div>";
-    username.appendChild(ping);
-    
+       
     if(user.username === "admin") {        
         var addTable = document.createElement("span");
         addTable.setAttribute("class", "removeUser");
@@ -114,12 +103,4 @@ function logoff(id) {
     document.getElementById("content").style.display = "none";
     document.getElementById("logging").style.display = "none";
     socket.send(JSON.stringify(userAction));
-}
-
-function pingUserElement(userName) {
-    var content = document.getElementById("logging");
-    
-    var headerText = document.createElement("p");
-    headerText.innerHTML = "User "+userName+": "+"System -> Pong";
-    content.appendChild(headerText);        
 }

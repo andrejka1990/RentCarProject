@@ -5,7 +5,6 @@
  */
 package com.evolutiongaming.ws;
 
-import com.evolutiongaming.entity.Ping;
 import com.evolutiongaming.entity.User;
 
 import java.io.IOException;
@@ -34,8 +33,7 @@ public class UserSessionHandler {
     private final Set<User> users = new HashSet<>();
     
     private int pingId = 0;
-    private final Set<Ping> pings = new HashSet<>();
-    
+        
     public void addSession(final Session session) {     
         sessions.add(session);
         
@@ -62,25 +60,7 @@ public class UserSessionHandler {
         final JsonObject removeMessage = removeMessage(id);
         sendToAllConnectedSessions(removeMessage);
     }
-    
-    public void addPing(final Ping ping) {  
-        ping.setSeq(pingId);
-        pings.add(ping);
-        pingId++;
-        sendToAllConnectedSessions(pingMessage(ping));
-    }
-    
-    public List<Ping> getPings() {     
-        return new ArrayList<>(pings);   
-    } 
-    
-    private JsonObject pingMessage(final Ping p) {    
-        final JsonProvider provider = JsonProvider.provider();
-        final JsonObject pingMessage = provider.createObjectBuilder()
-                .add("$type", "ping").add("seq", p.getSeq()).build();
-        return pingMessage; 
-    }
-    
+      
     private JsonObject loginMessage(final User user) {    
         final JsonProvider provider = JsonProvider.provider();
         final JsonObject addMessage = provider.createObjectBuilder()

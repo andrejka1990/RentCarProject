@@ -5,7 +5,6 @@
  */
 package com.evolutiongaming.ws;
 
-import com.evolutiongaming.entity.Ping;
 import com.evolutiongaming.entity.User;
 import java.io.StringReader;
 
@@ -62,10 +61,7 @@ public class WebSocketServer {
             }
             
             if (jsonMessage.getString("$type").equalsIgnoreCase("ping")) {
-                final Ping pingObj = new Ping();
-                pingObj.setSeq(jsonMessage.getInt("seq", 0));
-                pingObj.setPong(jsonMessage.getString("$type"));
-                sessionHandler.addPing(pingObj);
+                
             }
         }
     }
