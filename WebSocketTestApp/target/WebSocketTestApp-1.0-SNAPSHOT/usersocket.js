@@ -99,13 +99,7 @@ function printUserElement(user) {
         var content = document.getElementById("content");
         var subscribe = document.createElement("span");
         subscribe.setAttribute("class", "removeUser");
-        subscribe.innerHTML = "<p/><p/><h3>Table name\n\
-        <div class=\"button\">\n\
-            <a href=\"#\">Subscribe</a>\n\
-        </div>\n\
-        <div class=\"button\">\n\
-            <a href=\"#\">Unsubscribe</a>\n\
-        </div></h3>";
+        subscribe.innerHTML = "<p/><p/><h3>Table name</h3>";
         content.appendChild(subscribe);
     }
 }
