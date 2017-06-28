@@ -1,0 +1,51 @@
+create table employees (
+    emp_id numeric,
+    emp_name varchar(30),
+    emp_personal_code varchar(10),
+    emp_address varchar(30),
+    emp_phone varchar(12),
+    constraint emp_pk primary key (emp_id)
+);
+
+create table cars (
+    car_name varchar(10),
+    car_number varchar(10),
+	rent_by numeric,
+    constraint car_pk primary key (car_number),
+	constraint rent_car_fk foreign key (rent_by) references employees(emp_id)
+);
+
+create table rent_cars (
+    car_number varchar(10),	    
+	date_from date,
+	date_to date,
+	constraint rent_car_fk foreign key (car_number) references cars(car_number)
+);
+
+insert into employees values (1,'Name Surname 1','95117','111 E. Las Olivas Blvd','305-555-0188');
+insert into employees values (2,'Name Surname 2','95035','9754 Main Street','305-555-0148');
+insert into employees values (25,'Name Surname 3','85638','8989 Red Albatross Drive','214-555-0133');
+insert into employees values (3,'Name Surname 4','12347','8585 South Upper Murray Drive','555-555-0175');
+insert into employees values (36,'Name Surname 5','94401','65653 Lake Road','650-555-0160');
+insert into employees values (106,'Name Surname 6','95035','829 E Flex Drive','408-555-0157');
+insert into employees values (149,'Name Surname 7','95117','4381 Kelly Valley Ave','408-555-0169');
+insert into employees values (863,'Name Surname 8','94401','456 444th Street','650-555-0181');
+insert into employees values (777,'Name Surname 9','48128','88 Northsouth Drive','313-555-0172');
+insert into employees values (753,'Name Surname 10','48128','2267 NE Michigan Ave','313-555-0151');
+insert into employees values (722,'Name Surname 11','48124','52963 Notouter Dr','313-555-0144');
+insert into employees values (409,'Name Surname 12','10095','4400 527th Street','212-555-0110');
+insert into employees values (410,'Name Surname 13','10096','9653 211th Ave','212-555-0191');
+
+insert into cars (car_name, car_number) values ('Car 1', 'NR-0774');
+insert into cars (car_name, car_number) values ('Car 2', 'NR-1310');
+insert into cars (car_name, car_number) values ('Car 3', 'NR-1498');
+insert into cars (car_name, car_number) values ('Car 4', 'NR-2201');
+insert into cars (car_name, car_number) values ('Car 5', 'NR-2368');
+insert into cars (car_name, car_number) values ('Car 6', 'NR-2397');
+insert into cars (car_name, car_number) values ('Car 7', 'NR-4588');
+insert into cars (car_name, car_number) values ('Car 8', 'NR-5597');
+insert into cars (car_name, car_number) values ('Car 9', 'NR-6319');
+insert into cars (car_name, car_number) values ('Car 10', 'NR-7478');
+insert into cars (car_name, car_number) values ('Car 11', 'NR-8833');
+insert into cars (car_name, car_number) values ('Car 12', 'NR-8874');
+insert into cars (car_name, car_number) values ('Car 13', 'NR-9603');

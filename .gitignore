@@ -1,9 +1,8 @@
-/TestProject/nb-configuration.xml
-/TestProject/target/classes
-/TestProject/target/endorsed
-/TestProject/target/generated-sources
-/TestProject/target/maven-archiver
-/TestProject/target/maven-status
-/TestProject/target/surefire
-/TestProject/target/test-classes
-/TestProject/target/TestProject
+/AuthenticaTestProject/target/archive-tmp
+/AuthenticaTestProject/target/classes
+/AuthenticaTestProject/target/generated-sources
+/AuthenticaTestProject/target/maven-archiver
+/AuthenticaTestProject/target/maven-status
+/AuthenticaTestProject/target/surefire
+/AuthenticaTestProject/target/test-classes
+/AuthenticaTestProject/target/CarRentTestProject.jar
